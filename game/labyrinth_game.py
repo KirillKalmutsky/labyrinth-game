@@ -23,6 +23,7 @@ class LabyrinthGame:
                          'full_map': self.print_labyrinth,
                          'save': self.save,
                          'me': self.show_me,
+                         'help': self.allcommands,
                          'go': self.move
                         }
         
@@ -33,13 +34,25 @@ class LabyrinthGame:
                              }
     
     
+    def allcommands(self, command):
+        '''Print all commands'''
+        self.clear(command)
+        
+        for name, func in self.commands.items():
+            print(f"'{name}': {func.__doc__}")
+            
+        return True
+    
+    
     def quit(self, command):
+        '''Quit the game'''
         print('The game is closed')
         
         return False
     
     
     def skip(self, command):
+        '''Skip your turn, fall into warmhole'''
         if (self.player.x, self.player.y) in self.labyrinth.wormholes:
             print('You falled into wormhole!')
             self.player.x, self.player.y = self.labyrinth.goto_next_wormhole(self.player.x, self.player.y)
@@ -51,24 +64,28 @@ class LabyrinthGame:
     
     
     def pos(self, command):
+        '''Get your current position'''
         print(self.player.x, self.player.y)
         
         return True
     
     
     def clear(self, command):
+        '''Clear output in console'''
         os.system('clear')
         
         return True
      
     
     def exit(self, command):
+        '''Position of exit, cheating'''
         print(self.labyrinth.exit)
         
         return True
     
     
     def inventory(self, command):
+        '''Open your inventory'''
         if self.player.inventory:
             for item in self.player.inventory:
                 print(item)
@@ -79,6 +96,7 @@ class LabyrinthGame:
     
     
     def save(self, command):
+        '''Save and quit the game'''
         filename = command.split()[1]
         
         with open(os.path.join('saves', filename) + '.pkl', 'wb') as output:
@@ -90,6 +108,7 @@ class LabyrinthGame:
     
     
     def move(self, command):
+        '''Move into one direction of: "up", "down", "right", "left"'''
         direction, difx, dify = self.move_commands[command]
         
         if (self.player.x + difx, self.player.y + dify) in self.labyrinth.monolith:
@@ -130,6 +149,7 @@ class LabyrinthGame:
             
 
     def print_labyrinth(self, command):
+        '''Print all labyrinth, cheating'''
         self.clear(command)
         for i in range(len(self.labyrinth.map)):
             for j in range(len(self.labyrinth.map)):
@@ -139,6 +159,7 @@ class LabyrinthGame:
     
     
     def print_seen_part(self, command):
+        '''Print seen part of labyrinth'''
         self.clear(command)
         for i in range(len(self.labyrinth.map)):
             for j in range(len(self.labyrinth.map)):
@@ -158,6 +179,7 @@ class LabyrinthGame:
             
     
     def show_me(self, command):
+        '''Print labyrinth with you as "x" mark'''
         self.clear(command)
         for i in range(len(self.labyrinth.map)):
             for j in range(len(self.labyrinth.map)):

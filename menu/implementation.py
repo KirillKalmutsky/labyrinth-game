@@ -13,9 +13,16 @@ class LabyrinthMenu(Menu):
         print('Type command "start <labyrinth_size>", "load <file_name>" or "quit"')
         
         while True:
+            
             self.command = input().split()
+            if not self.command:
+                continue
+                
             if self.command[0] == 'start':
                 self.command[1] = int(self.command[1])
+                if (self.command[1] < 4) or (self.command[1] > 10):
+                    print('Size must be not less 4 and not bigger 10')
+                    continue
                 return self.new_game()
             
             elif self.command[0] == 'load':
