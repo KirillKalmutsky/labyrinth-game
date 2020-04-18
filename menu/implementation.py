@@ -1,0 +1,46 @@
+import pickle
+import os
+
+from menu.interface import Menu
+from labyrinth.labyrinth import LabyrinthFabric
+from game.labyrinth_game import LabyrinthGame
+
+
+class LabyrinthMenu(Menu):
+    
+    
+    def start(self):
+        print('Type command "start <labyrinth_size>", "load <file_name>" or "quit"')
+        
+        while True:
+            self.command = input().split()
+            if self.command[0] == 'start':
+                self.command[1] = int(self.command[1])
+                return self.new_game()
+            
+            elif self.command[0] == 'load':
+                self.command[1] = self.command[1] + '.pkl'
+                return self.load_game()
+            
+            elif self.command[0] == 'quit':
+                return False
+            
+            else:
+                print('Unknown command, try again or type "quit"')
+    
+    
+    def new_game(self):
+        fabric = LabyrinthFabric()
+        new_game = LabyrinthGame(fabric.produce(self.command[1]))
+        print('New game has started')
+        
+        return new_game.play()
+    
+    
+    def load_game(self):
+        with open(os.path.join('saves', self.command[1]), 'rb') as f:
+            loaded_game = pickle.load(f)
+            
+        print('Loaded game has started')
+        
+        return loaded_game.play(loaded=True)
