@@ -3,9 +3,11 @@ from creatures.interface import MovingCreature
 
 class Player(MovingCreature):
     
+    
     def __init__(self, x, y):
         self.inventory = []
         self.exit_seen = False
+        self.hp = 100
         self.x = x
         self.y = y
         
@@ -29,3 +31,11 @@ class Player(MovingCreature):
         
     def check_item(self, item):
         return item in self.inventory
+    
+    
+    def lose_hp(self, dmg):
+        self.hp = self.hp - dmg
+        if self.hp > 0:
+            return True
+        else:
+            return False

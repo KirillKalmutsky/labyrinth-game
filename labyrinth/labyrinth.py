@@ -55,10 +55,34 @@ class Labyrinth:
                 n_visited_cells += 1
             else:
                 cell = cell_stack.pop()
-         
+                
+                
+    def create_river(self):
+        self.river = []
+        
+        cell = self.get_random_cell()
+        dir_from = None
+        self.river.append((cell.y, cell.x))
+        
+        while len(self.river) < self.size:
+            neighbors = [i for i in self.neighbors(cell) 
+                         if i.direction(cell) != dir_from 
+                         and (i.y, i.x) not in self.river]
+            
+            if not len(neighbors):
+                break
+                
+            if self.size * random.random() < 1.0:
+                break
+            
+            next_cell = random.choice(neighbors)
+            dir_from = cell.direction(next_cell)
+            self.river.append((next_cell.y, next_cell.x))
+            cell = next_cell
+            
         
     def create_objects(self):
-        idxs = [i for i in itertools.product(range(self.size), repeat=2)]
+        idxs = [i for i in itertools.product(range(self.size), repeat=2) if i not in self.river]
         obj_pos = random.sample(idxs, 6)
         
         self.treasure = obj_pos[0]
@@ -104,6 +128,10 @@ class Labyrinth:
                         self.map[i][j] = '@'
                     elif (i-1, j-1) == self.treasure:
                         self.map[i][j] = '$'
+                    elif (i-1, j-1) == self.river[0]:
+                        self.map[i][j] = '*'
+                    elif (i-1, j-1) in self.river:
+                        self.map[i][j] = '≈'
                     else:
                         for k in range(len(self.symbols)):
                             if set(self.cells[i-1][j-1].walls) == set(keys[k]):
@@ -118,13 +146,14 @@ class Labyrinth:
             
     def create_labyrinth(self):
         self.create_maze()
+        self.create_river()
         self.create_objects()
         self.create_monolith()
         self.create_map()
         
         return self
-
-
+    
+    
 class LabyrinthFabric:
     
     def produce(self, size):
