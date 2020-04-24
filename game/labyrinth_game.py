@@ -244,7 +244,7 @@ class LabyrinthGame:
             if move == 'skip':
                 moves.append(move)
             else:
-                for _ in range(2):
+                for _ in range(3):
                     moves.append(move)
         
         # Pick random action
