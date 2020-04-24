@@ -61,24 +61,47 @@ class Labyrinth:
         self.river = []
         
         cell = self.get_random_cell()
-        dir_from = None
-        self.river.append((cell.y, cell.x))
+        self.river.append((cell.x, cell.y))
+        dir_from = set()
+        
+        walls = set(['up', 'down', 'right', 'left'])
+        
+        reverse = {'right':'left',
+                   'left':'right',
+                   'up':'down',
+                   'down':'up'}
         
         while len(self.river) < self.size:
-            neighbors = [i for i in self.neighbors(cell) 
-                         if i.direction(cell) != dir_from 
-                         and (i.y, i.x) not in self.river]
             
-            if not len(neighbors):
-                break
-                
-            if self.size * random.random() < 1.0:
+            directions = list(walls.difference(cell.walls).difference(dir_from))
+            
+            dir_to = random.choice(directions)
+            dir_from = reverse[dir_to]
+
+            if dir_to == 'right':
+                x = self.river[-1][0] + 1
+                y = self.river[-1][1] + 0
+                cell = self.cells[x][y]
+            elif dir_to == 'left':
+                x = self.river[-1][0] - 1
+                y = self.river[-1][1] + 0
+                cell = self.cells[x][y]
+            elif dir_to == 'up':
+                x = self.river[-1][0] + 0
+                y = self.river[-1][1] - 1
+                cell = self.cells[x][y]
+            elif dir_to == 'down':
+                x = self.river[-1][0] + 0
+                y = self.river[-1][1] + 1
+                cell = self.cells[x][y]
+                            
+            if (cell.x, cell.y) not in self.river:
+                self.river.append((cell.x, cell.y))
+            else:
                 break
             
-            next_cell = random.choice(neighbors)
-            dir_from = cell.direction(next_cell)
-            self.river.append((next_cell.y, next_cell.x))
-            cell = next_cell
+            if self.size * random.random() < 0:
+                break
             
         
     def create_objects(self):
