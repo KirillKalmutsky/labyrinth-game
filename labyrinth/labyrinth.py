@@ -62,7 +62,8 @@ class Labyrinth:
         
         cell = self.get_random_cell()
         self.river.append((cell.x, cell.y))
-        dir_from = set()
+        dir_from = None
+        dir_to = None
         
         walls = set(['up', 'down', 'right', 'left'])
         
@@ -73,34 +74,43 @@ class Labyrinth:
         
         while len(self.river) < self.size:
             
-            directions = list(walls.difference(cell.walls).difference(dir_from))
-            
-            dir_to = random.choice(directions)
-            dir_from = reverse[dir_to]
+            try:
+                directions = list(walls.difference(cell.walls))
+                if dir_from in directions:
+                    directions.remove(dir_from)
 
-            if dir_to == 'right':
-                x = self.river[-1][0] + 1
-                y = self.river[-1][1] + 0
-                cell = self.cells[x][y]
-            elif dir_to == 'left':
-                x = self.river[-1][0] - 1
-                y = self.river[-1][1] + 0
-                cell = self.cells[x][y]
-            elif dir_to == 'up':
-                x = self.river[-1][0] + 0
-                y = self.river[-1][1] - 1
-                cell = self.cells[x][y]
-            elif dir_to == 'down':
-                x = self.river[-1][0] + 0
-                y = self.river[-1][1] + 1
-                cell = self.cells[x][y]
-                            
-            if (cell.x, cell.y) not in self.river:
-                self.river.append((cell.x, cell.y))
-            else:
-                break
-            
-            if self.size * random.random() < 0:
+                if not len(directions):
+                    break
+
+                dir_to = random.choice(directions)
+                dir_from = reverse[dir_to]
+
+
+                if dir_to == 'right':
+                    x = self.river[-1][0] + 1
+                    y = self.river[-1][1] + 0
+                    cell = self.cells[x][y]
+                elif dir_to == 'left':
+                    x = self.river[-1][0] - 1
+                    y = self.river[-1][1] + 0
+                    cell = self.cells[x][y]
+                elif dir_to == 'up':
+                    x = self.river[-1][0] + 0
+                    y = self.river[-1][1] - 1
+                    cell = self.cells[x][y]
+                elif dir_to == 'down':
+                    x = self.river[-1][0] + 0
+                    y = self.river[-1][1] + 1
+                    cell = self.cells[x][y]
+
+                if (cell.x, cell.y) not in self.river:
+                    self.river.append((cell.x, cell.y))
+                else:
+                    break
+
+                if self.size * random.random() < 0.1:
+                    break
+            except IndexError:
                 break
             
         
