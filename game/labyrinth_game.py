@@ -123,6 +123,10 @@ class LabyrinthGame:
         direction, difx, dify = self.move_commands[command]
         
         if (self.player.x + difx, self.player.y + dify) in self.labyrinth.river:
+            
+            for x, y in self.labyrinth.river:
+                self.labyrinth.cells[x][y].explored()
+                
             if (self.player.x, self.player.y) not in self.labyrinth.river:
                 idx = self.labyrinth.river.index((self.player.x + difx, self.player.y + dify))
                 if idx + 2 < len(self.labyrinth.river):
