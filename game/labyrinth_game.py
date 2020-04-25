@@ -272,6 +272,8 @@ class LabyrinthGame:
                         self.bear.x, self.bear.y = self.labyrinth.river[idx + 2]
                     else:
                         self.bear.x, self.bear.y = self.labyrinth.river[-1]
+                else:
+                    self.bear.move(direction)
             
             else:
                 self.bear.move(direction)
